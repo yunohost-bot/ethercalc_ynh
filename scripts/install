@@ -17,8 +17,6 @@ ynh_script_progression "Setting up source files..."
 
 ynh_setup_source --dest_dir=$install_dir
 
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:www-data "$install_dir"
 chmod +x $install_dir/bin/runSafe.sh
 
 #=================================================
@@ -28,7 +26,6 @@ ynh_script_progression "Adding system configurations related to $app..."
 
 ynh_config_add_nginx
 
-env_path="$PATH"
 ynh_config_add_systemd
 
 yunohost service add $app --description "Collaborative spreadsheet editor" --log="/var/log/$app/$app.log"
@@ -39,10 +36,9 @@ yunohost service add $app --description "Collaborative spreadsheet editor" --log
 ynh_script_progression "Building EtherCalc... (this will take some time and resources!)"
 
 pushd "$install_dir"
-
 	ynh_safe_rm "$install_dir/package-lock.json"
-	ynh_hide_warnings npm i -g ethercalc
-	ynh_hide_warnings npm i zappajs
+	ynh_hide_warnings ynh_exec_as_app npm i -g ethercalc
+	ynh_hide_warnings ynh_exec_as_app npm i zappajs
 popd
 
 #=================================================
@@ -50,7 +46,6 @@ popd
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."
 
-# Start a systemd service
 ynh_systemctl --service=$app --action=start --log_path="systemd"
 
 #=================================================
