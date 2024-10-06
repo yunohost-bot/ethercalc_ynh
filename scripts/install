@@ -37,8 +37,8 @@ ynh_script_progression "Building EtherCalc... (this will take some time and reso
 
 pushd "$install_dir"
 	ynh_safe_rm "$install_dir/package-lock.json"
-	ynh_hide_warnings ynh_exec_as_app npm i -g ethercalc
-	ynh_hide_warnings ynh_exec_as_app npm i zappajs
+	ynh_hide_warnings npm i -g ethercalc
+	ynh_hide_warnings npm i zappajs
 popd
 
 #=================================================
